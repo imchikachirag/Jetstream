@@ -2,7 +2,6 @@ package com.force.sdk.streaming.client;
 
 import com.force.sdk.connector.ForceConnectorConfig;
 import com.force.sdk.connector.ForceServiceConnector;
-import com.sforce.soap.partner.UpsertResult;
 import com.sforce.soap.partner.sobject.SObject;
 import org.cometd.bayeux.Message;
 import org.cometd.bayeux.client.ClientSessionChannel;
@@ -38,7 +37,7 @@ public class StreamingClient {
         pushTopic.setField("query", pushTopicQuery);
         pushTopic.setField("apiVersion", "22.0");
 
-        UpsertResult[] results = connector.getConnection().upsert("id", new SObject[]{pushTopic});
+        connector.getConnection().upsert("id", new SObject[]{pushTopic});
 
         HttpClient client = new HttpClient();
         client.setConnectorType(HttpClient.CONNECTOR_SELECT_CHANNEL);
