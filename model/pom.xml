@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>streaming</artifactId>
+        <groupId>com.force.sdk.streaming</groupId>
+        <version>1.0</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>model</artifactId>
+    <dependencies>
+        <dependency>
+            <groupId>com.force.sdk</groupId>
+            <artifactId>force-connector</artifactId>
+            <version>${force.sdk.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.force.sdk</groupId>
+            <artifactId>force-jpa</artifactId>
+            <version>${force.sdk.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.datanucleus</groupId>
+            <artifactId>datanucleus-core</artifactId>
+            <version>${datanucleus.core.version}</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.datanucleus</groupId>
+            <artifactId>datanucleus-jpa</artifactId>
+            <version>${datanucleus.jpa.version}</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+            <version>6.0.1</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.datanucleus</groupId>
+                <artifactId>maven-datanucleus-plugin</artifactId>
+                <version>2.1.0-release</version>
+                <dependencies>
+                        <dependency>
+                                <groupId>org.datanucleus</groupId>
+                                <artifactId>datanucleus-core</artifactId>
+                                <version>2.2.3</version>
+                                <scope>runtime</scope>
+                        </dependency>
+                        <dependency>
+                                <groupId>org.datanucleus</groupId>
+                                <artifactId>datanucleus-enhancer</artifactId>
+                                <version>2.1.3</version>
+                                <scope>runtime</scope>
+                        </dependency>
+                        <dependency>
+                                <groupId>org.datanucleus</groupId>
+                                <artifactId>datanucleus-rdbms</artifactId>
+                                <version>2.1.0-release</version>
+                                <scope>runtime</scope>
+                                <optional>true</optional>
+                        </dependency>
+
+                        <dependency>
+                                <groupId>org.datanucleus</groupId>
+                                <artifactId>datanucleus-jpa</artifactId>
+                                <version>2.1.6</version>
+                                <scope>runtime</scope>
+                                <optional>true</optional>
+                        </dependency>
+                </dependencies>
+                <configuration>
+                        <api>JPA</api>
+                        <verbose>true</verbose>
+                </configuration>
+                <executions>
+                        <execution>
+                                <phase>process-classes</phase>
+                                <goals>
+                                        <goal>enhance</goal>
+                                </goals>
+                        </execution>
+                </executions>
+            </plugin>
+
+        </plugins>
+    </build>
+
+</project>

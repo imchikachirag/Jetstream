@@ -14,11 +14,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Created by IntelliJ IDEA.
- * User: naamannewbold
- * Date: 6/8/11
- * Time: 9:52 PM
- * To change this template use File | Settings | File Templates.
+ * @author naamannewbold
  */
 public class StreamingClient {
 
@@ -28,7 +24,7 @@ public class StreamingClient {
 
     public static void main(String[] args) throws Exception {
         ForceConnectorConfig config = new ForceConnectorConfig();
-        config.setConnectionUrl(System.getProperty("FORCE_FORCEDATABASE_URL"));
+        config.setConnectionUrl(System.getenv("FORCE_FORCEDATABASE_URL"));
         ForceServiceConnector connector = new ForceServiceConnector(config);
 
         SObject pushTopic = new SObject();
@@ -57,6 +53,8 @@ public class StreamingClient {
             Thread.sleep(5000);
         }
 
+        System.out.println("Handshake complete");
+
         bayeuxClient.getChannel("/" + pushTopicName).subscribe(new ClientSessionChannel.MessageListener() {
             public void onMessage(ClientSessionChannel clientSessionChannel, Message message) {
                 System.out.println("=> Receiving streaming data...");
@@ -64,8 +62,6 @@ public class StreamingClient {
                 System.out.println("=> Finished receiving data");
             }
         });
-
-        System.in.read();
     }
 
 }
