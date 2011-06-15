@@ -6,9 +6,20 @@
 
         <persistence-unit name="forceDatabase">
                 <provider>com.force.sdk.jpa.PersistenceProviderImpl</provider>
+            <class>com.force.sdk.streaming.model.Account</class>
+            <class>com.force.sdk.streaming.model.CallCenter</class>
+            <class>com.force.sdk.streaming.model.Contact</class>
+            <class>com.force.sdk.streaming.model.Group</class>
+            <class>com.force.sdk.streaming.model.Organization</class>
+            <class>com.force.sdk.streaming.model.Profile</class>
+            <class>com.force.sdk.streaming.model.PushTopic</class>
+            <class>com.force.sdk.streaming.model.User</class>
+            <class>com.force.sdk.streaming.model.UserLicense</class>
+            <class>com.force.sdk.streaming.model.UserRole</class>
 
                 <properties>
                         <property name="datanucleus.storeManagerType" value="force" />
+                        <property name="datanucleus.metadata.allowLoadAtRuntime" value="true"/>
                         <property name="datanucleus.autoCreateSchema" value="true" />
                         <property name="datanucleus.validateTables" value="false" />
                         <property name="datanucleus.validateConstraints" value="false" />
@@ -18,6 +29,7 @@
                         <property name="datanucleus.cache.level2.type" value="none" />
                         <property name="datanucleus.detachAllOnCommit" value="true" />
                         <property name="datanucleus.copyOnAttach" value="false" />
+                        <!--<property name="force.schemaCreateClient" value="true" />-->
                 </properties>
         </persistence-unit>
 </persistence>

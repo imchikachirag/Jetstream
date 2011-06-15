@@ -17,7 +17,7 @@ public class TestModule extends AbstractModule {
 
     @Override
     protected void configure() {
-        bind(TestContext.class);
+        bind(TestUtil.class);
     }
 
     @Provides
