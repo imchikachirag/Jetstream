@@ -3,3 +3,4 @@ target
 *.ipr
 *.iws
 deploy.zip
+.DS_Store
