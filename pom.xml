@@ -34,10 +34,10 @@
         </repository>
     </repositories>
     <distributionManagement>
-        <repository>
+        <snapshotRepository>
             <id>snapshot-repo</id>
             <url>https://github.com/naamannewbold/repo/raw/master/snapshots</url>
-        </repository>
+        </snapshotRepository>
 
         <repository>
             <id>repo</id>
