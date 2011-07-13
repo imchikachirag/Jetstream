@@ -33,7 +33,17 @@
             </snapshots>
         </repository>
     </repositories>
+    <distributionManagement>
+        <repository>
+            <id>snapshot-repo</id>
+            <url>https://github.com/naamannewbold/repo/raw/master/snapshots</url>
+        </repository>
 
+        <repository>
+            <id>repo</id>
+            <url>https://github.com/naamannewbold/repo/raw/master/releases</url>
+        </repository>
+    </distributionManagement>
     <dependencies>
         <!-- servlet dependencies -->
         <dependency>
