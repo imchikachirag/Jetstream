@@ -3,7 +3,8 @@ package com.force.sdk.streaming.client;
 import com.force.sdk.connector.ForceConnectionProperty;
 import com.force.sdk.connector.ForceConnectorUtils;
 import com.force.sdk.connector.ForceServiceConnector;
-import com.force.sdk.streaming.client.util.ForceStreamingResource;
+import com.force.sdk.streaming.exception.ForceStreamingException;
+import com.force.sdk.streaming.util.ForceStreamingResource;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import org.cometd.client.BayeuxClient;
@@ -32,8 +33,12 @@ public class ForceStreamingClientModule extends AbstractModule {
     }
 
     public ForceStreamingClientModule(String connectionName, int timeoutOption) {
+        this(connectionName, Defaults.PERSISTENCE_UNIT.getValue(), timeoutOption);
+    }
+
+    public ForceStreamingClientModule(String connectionName, String persistenceUnitName, int timeoutOption) {
         this.connectionName = connectionName;
-        this.persistenceUnit = connectionName;
+        this.persistenceUnit = persistenceUnitName;
         this.timeoutOption = timeoutOption;
     }
 
@@ -55,7 +60,13 @@ public class ForceStreamingClientModule extends AbstractModule {
 
     @Provides
     BayeuxClient provideBayeuxClient() throws Exception {
-        String baseUrl = "http://" + ForceConnectorUtils.loadConnectorPropsFromName(connectionName).get(ForceConnectionProperty.ENDPOINT);
+        System.out.println("Connection Name: " + connectionName);
+
+        Map<ForceConnectionProperty, String> connectionProperties = ForceConnectorUtils.loadConnectorPropsFromName(connectionName);
+        if (connectionProperties == null || !connectionProperties.containsKey(ForceConnectionProperty.ENDPOINT))
+            throw new ForceStreamingException("Unable to find connection named " + connectionName);
+
+        String baseUrl = "http://" + connectionProperties.get(ForceConnectionProperty.ENDPOINT);
         baseUrl += ForceStreamingResource.RESOURCE_ENDPOINT.getValue();
 
         HttpClient client = new HttpClient();

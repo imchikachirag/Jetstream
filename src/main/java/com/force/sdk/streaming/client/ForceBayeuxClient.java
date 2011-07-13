@@ -1,7 +1,7 @@
 package com.force.sdk.streaming.client;
 
 import com.force.sdk.connector.ForceServiceConnector;
-import com.force.sdk.streaming.client.util.ForceStreamingResource;
+import com.force.sdk.streaming.util.ForceStreamingResource;
 import com.force.sdk.streaming.model.PushTopic;
 import com.google.inject.Inject;
 import com.sforce.ws.ConnectionException;

@@ -1,5 +1,6 @@
 package com.force.sdk.streaming.client.util;
 
+import com.force.sdk.streaming.util.ForceStreamingUtil;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 

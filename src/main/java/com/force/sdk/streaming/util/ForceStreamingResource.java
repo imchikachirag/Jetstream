@@ -1,4 +1,4 @@
-package com.force.sdk.streaming.client.util;
+package com.force.sdk.streaming.util;
 
 /**
  * Created by IntelliJ IDEA.

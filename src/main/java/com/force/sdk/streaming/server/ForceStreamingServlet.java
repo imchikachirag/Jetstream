@@ -15,7 +15,7 @@ public class ForceStreamingServlet extends GenericServlet {
 
     public void init() throws ServletException {
         BayeuxServer bayeux = (BayeuxServer)getServletContext().getAttribute(BayeuxServer.ATTRIBUTE);
-        new ForceStreamingService(bayeux);
+        new ForceStreamingService(bayeux, getServletConfig());
     }
 
     @Override
