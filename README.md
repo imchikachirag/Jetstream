@@ -3,13 +3,43 @@ The Salesforce Streaming API is a Bayeux implementation built on the Force.com p
 
 The following instructions assume some knowledge of the Force.com platform.  If you are unfamiliar, please visit http://developer.force.com.
 
-## Usage
+## Install
 1. git clone git://github.com/naamannewbold/streaming.git
 2. cd streaming
 3. mvn install -DskipTests
 4. export FORCE_FORCEDATABASE_URL="force://instance.salesforce.com;user=username@org;password=password"
 5. add the following to your own pom.xml
 
+        <dependency>
+            <groupId>com.force.sdk.streaming</groupId>
+            <artifactId>streaming</artifactId>
+            <version>0.1</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.inject</groupId>
+            <artifactId>guice</artifactId>
+            <version>3.0</version>
+        </dependency>
+
+Note: at some point in the future, the guide dependency will be abstracted out.
+
+## Java Usage
+        Injector injector = Guice.createInjector(new ForceStreamingClientModule());
+        ForceBayeuxClient client = injector.getInstance(ForceBayeuxClient.class);
+        PushTopicManager pushTopicManager = injector.getInstance(PushTopicManager.class);
+        PushTopic topic = pushTopicManager.getTopicByName(name);
+        client.subscribeTo(topic, new ClientSessionChannel.MessageListener() {
+            public void onMessage(ClientSessionChannel channel, Message message) {
+                LOGGER.debug("Received message on " + channel.toString());
+                remote.deliver(getServerSession(), "/force", message, null);
+            }
+        });
+
+
+## Java Web Project Usage
+The primary use case intended for a web project is as a proxy. Due to cross-domain limitations, javascript cannot callout to the streaming API unless it's on force.com or salesforce.com. This servlet allows javascript to interact with the streaming API.
+
+6. Add these dependencies to your pom.xml
         <dependency>
             <groupId>com.force.sdk.streaming</groupId>
             <artifactId>streaming</artifactId>
@@ -32,8 +62,18 @@ The following instructions assume some knowledge of the Force.com platform.  If 
                 </exclusion>
             </exclusions>
         </dependency>
+        <dependency>
+            <groupId>com.google.inject</groupId>
+            <artifactId>guice</artifactId>
+            <version>${guice.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.inject.extensions</groupId>
+            <artifactId>guice-servlet</artifactId>
+            <version>${guice.version}</version>
+        </dependency>
 
-6. in your web project, add the following to your web.xml
+7. in your web project, add the following to your web.xml
 
         <servlet>
             <servlet-name>cometd</servlet-name>
@@ -50,7 +90,7 @@ The following instructions assume some knowledge of the Force.com platform.  If 
             <load-on-startup>2</load-on-startup>
         </servlet>
 
-7. wire your javascript client to talk to /service/force, e.g.
+8. wire your javascript client to talk to /service/force, e.g.
 
         cometd.batch(function()
         {
