@@ -4,11 +4,11 @@ The Salesforce Streaming API is a Bayeux implementation built on the Force.com p
 The following instructions assume some knowledge of the Force.com platform.  If you are unfamiliar, please visit http://developer.force.com.
 
 ## Usage
-    1. git clone git://github.com/naamannewbold/streaming.git
-    2. cd streaming
-    3. mvn install -DskipTests
-    4. export FORCE_FORCEDATABASE_URL="force://instance.salesforce.com;user=username@org;password=password"
-    5. add the following to your own pom.xml
+1. git clone git://github.com/naamannewbold/streaming.git
+2. cd streaming
+3. mvn install -DskipTests
+4. export FORCE_FORCEDATABASE_URL="force://instance.salesforce.com;user=username@org;password=password"
+5. add the following to your own pom.xml
 ```xml
         <dependency>
             <groupId>com.force.sdk.streaming</groupId>
@@ -33,8 +33,7 @@ The following instructions assume some knowledge of the Force.com platform.  If 
             </exclusions>
         </dependency>
 ```
-
-    6. in your web project, add the following to your web.xml
+6. in your web project, add the following to your web.xml
 ```xml
     <servlet>
         <servlet-name>cometd</servlet-name>
@@ -52,8 +51,7 @@ The following instructions assume some knowledge of the Force.com platform.  If 
         <load-on-startup>2</load-on-startup>
     </servlet>
 ```
-
-    7. wire your javascript client to talk to /service/force, e.g.
+7. wire your javascript client to talk to /service/force, e.g.
 ```javascript
         cometd.batch(function()
         {
