@@ -44,7 +44,6 @@ The following instructions assume some knowledge of the Force.com platform.  If 
         <servlet-name>cometd</servlet-name>
         <url-pattern>/cometd/*</url-pattern>
     </servlet-mapping>
-
     <servlet>
         <servlet-name>initializer</servlet-name>
         <servlet-class>com.force.sdk.streaming.server.ForceStreamingResource</servlet-class>
