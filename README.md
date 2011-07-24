@@ -1,4 +1,3 @@
-
 # Salesforce Streaming API Toolkit For Java
 The Salesforce Streaming API is a Bayeux implementation built on the Force.com platform.  The toolkit for Java provides a simple way to configure a connection to the Streaming API.
 
@@ -33,7 +32,7 @@ The following instructions assume some knowledge of the Force.com platform.  If 
                 </exclusion>
             </exclusions>
         </dependency>
-
+```
 
     6. in your web project, add the following to your web.xml
 ```xml
@@ -52,7 +51,7 @@ The following instructions assume some knowledge of the Force.com platform.  If 
         <servlet-class>com.force.sdk.streaming.server.ForceStreamingResource</servlet-class>
         <load-on-startup>2</load-on-startup>
     </servlet>
-
+```
 
     7. wire your javascript client to talk to /service/force, e.g.
 ```javascript
@@ -64,3 +63,4 @@ The following instructions assume some knowledge of the Force.com platform.  If 
             });
             cometd.publish('/service/force', { name: 'channelName' });
         });
+```
