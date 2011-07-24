@@ -9,6 +9,7 @@ The following instructions assume some knowledge of the Force.com platform.  If 
 3. mvn install -DskipTests
 4. export FORCE_FORCEDATABASE_URL="force://instance.salesforce.com;user=username@org;password=password"
 5. add the following to your own pom.xml
+
         <dependency>
             <groupId>com.force.sdk.streaming</groupId>
             <artifactId>streaming</artifactId>
@@ -31,7 +32,9 @@ The following instructions assume some knowledge of the Force.com platform.  If 
                 </exclusion>
             </exclusions>
         </dependency>
+
 6. in your web project, add the following to your web.xml
+
     <servlet>
         <servlet-name>cometd</servlet-name>
         <servlet-class>org.cometd.server.CometdServlet</servlet-class>
@@ -47,7 +50,9 @@ The following instructions assume some knowledge of the Force.com platform.  If 
         <servlet-class>com.force.sdk.streaming.server.ForceStreamingResource</servlet-class>
         <load-on-startup>2</load-on-startup>
     </servlet>
+
 7. wire your javascript client to talk to /service/force, e.g.
+
         cometd.batch(function()
         {
             cometd.subscribe('/force', function(message)
