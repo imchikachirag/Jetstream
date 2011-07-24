@@ -17,7 +17,6 @@ public class ForceStreamingContextListener extends GuiceServletContextListener {
             @Override
             protected void configureServlets() {
                 bind(PushTopicResource.class);
-                bind(ForceStreamingResource.class);
 
                 serve("/forcestream/*").with(GuiceContainer.class);
             }

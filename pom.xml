@@ -12,7 +12,7 @@
     <properties>
         <force.api.version>22.0.0</force.api.version>
         <force.sdk.version>22.0.2-BETA</force.sdk.version>
-        <cometd.version>2.2.0</cometd.version>
+        <cometd.version>2.3.0</cometd.version>
         <eclipse.jetty.version>7.4.0.v20110414</eclipse.jetty.version>
         <testng.version>6.0.1</testng.version>
         <guice.version>3.0</guice.version>
@@ -24,6 +24,7 @@
         <gson.version>1.7.1</gson.version>
         <jersey.version>1.8</jersey.version>
         <grizzly.servlet.webserver.version>1.9.18-i</grizzly.servlet.webserver.version>
+        <log4j.version>1.2.15</log4j.version>
     </properties>
 
     <repositories>
@@ -70,7 +71,7 @@
             <version>${cometd.version}</version>
         </dependency>
 
-        <!-- web -->
+        <!-- Web -->
         <dependency>
             <groupId>com.sun.jersey</groupId>
             <artifactId>jersey-server</artifactId>
@@ -99,7 +100,7 @@
         </dependency>
 
 
-        <!-- force.com dependencies -->
+        <!-- Force.com -->
         <dependency>
             <groupId>com.force.sdk</groupId>
             <artifactId>force-connector</artifactId>
@@ -123,14 +124,14 @@
             <version>${guice.version}</version>
         </dependency>
 
-        <!-- JSON dependencies -->
+        <!-- JSON -->
         <dependency>
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
             <version>${gson.version}</version>
         </dependency>
 
-        <!-- jdo/jpa dependencies -->
+        <!-- JPA -->
         <dependency>
             <groupId>org.datanucleus</groupId>
             <artifactId>datanucleus-core</artifactId>
@@ -144,12 +145,39 @@
             <scope>runtime</scope>
         </dependency>
 
-        <!-- test dependencies -->
+        <!-- Test -->
         <dependency>
             <groupId>org.testng</groupId>
             <artifactId>testng</artifactId>
             <version>${testng.version}</version>
         </dependency>
+
+        <!-- Logging -->
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <version>${log4j.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>javax.mail</groupId>
+                    <artifactId>mail</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>javax.jms</groupId>
+                    <artifactId>jms</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.sun.jdmk</groupId>
+                    <artifactId>jmxtools</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.sun.jmx</groupId>
+                    <artifactId>jmxri</artifactId>
+                </exclusion>
+            </exclusions>
+            <scope>runtime</scope>
+        </dependency>
+
     </dependencies>
 
     <build>

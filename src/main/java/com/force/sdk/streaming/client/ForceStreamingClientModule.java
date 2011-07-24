@@ -11,6 +11,8 @@ import org.cometd.client.BayeuxClient;
 import org.cometd.client.transport.ClientTransport;
 import org.cometd.client.transport.LongPollingTransport;
 import org.eclipse.jetty.client.HttpClient;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -27,6 +29,8 @@ public class ForceStreamingClientModule extends AbstractModule {
     String connectionName;
     String persistenceUnit;
     int timeoutOption;
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(ForceStreamingClientModule.class);
 
     public ForceStreamingClientModule() {
         this(Defaults.CONNECTION_NAME.getValue(), Integer.valueOf(Defaults.TIMEOUT.getValue()));
@@ -58,9 +62,11 @@ public class ForceStreamingClientModule extends AbstractModule {
         return new ForceServiceConnector(connectionName);
     }
 
+    // TODO: client.start() could potentially have some side effects.
+    // Need to understand more of what's going on under the hood.
     @Provides
     BayeuxClient provideBayeuxClient() throws Exception {
-        System.out.println("Connection Name: " + connectionName);
+        LOGGER.info("Providing bayeux client for connection name", connectionName);
 
         Map<ForceConnectionProperty, String> connectionProperties = ForceConnectorUtils.loadConnectorPropsFromName(connectionName);
         if (connectionProperties == null || !connectionProperties.containsKey(ForceConnectionProperty.ENDPOINT))
@@ -74,6 +80,7 @@ public class ForceStreamingClientModule extends AbstractModule {
         client.setConnectTimeout(timeoutOption);
         client.setTimeout(timeoutOption);
 
+        LOGGER.debug("Starting HttpClient", client);
         client.start();
 
         Map<String, Object> clientOptions = new HashMap<String, Object>();

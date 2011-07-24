@@ -6,7 +6,7 @@ package com.force.sdk.streaming.client;
 public enum Defaults {
     CONNECTION_NAME ("forceDatabase"),
     PERSISTENCE_UNIT ("forceDatabase"),
-    TIMEOUT ("120000");
+    TIMEOUT ("30000");
 
     private String value;
 
