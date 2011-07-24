@@ -35,20 +35,20 @@ The following instructions assume some knowledge of the Force.com platform.  If 
 
 6. in your web project, add the following to your web.xml
 
-    <servlet>
-        <servlet-name>cometd</servlet-name>
-        <servlet-class>org.cometd.server.CometdServlet</servlet-class>
-        <load-on-startup>1</load-on-startup>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>cometd</servlet-name>
-        <url-pattern>/cometd/*</url-pattern>
-    </servlet-mapping>
-    <servlet>
-        <servlet-name>initializer</servlet-name>
-        <servlet-class>com.force.sdk.streaming.server.ForceStreamingResource</servlet-class>
-        <load-on-startup>2</load-on-startup>
-    </servlet>
+        <servlet>
+            <servlet-name>cometd</servlet-name>
+            <servlet-class>org.cometd.server.CometdServlet</servlet-class>
+            <load-on-startup>1</load-on-startup>
+        </servlet>
+        <servlet-mapping>
+            <servlet-name>cometd</servlet-name>
+            <url-pattern>/cometd/*</url-pattern>
+        </servlet-mapping>
+        <servlet>
+            <servlet-name>initializer</servlet-name>
+            <servlet-class>com.force.sdk.streaming.server.ForceStreamingResource</servlet-class>
+            <load-on-startup>2</load-on-startup>
+        </servlet>
 
 7. wire your javascript client to talk to /service/force, e.g.
 
