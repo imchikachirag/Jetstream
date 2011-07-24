@@ -1,6 +1,7 @@
 package com.force.sdk.streaming.model;
 
 import javax.persistence.*;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * Java com.force.sdk.streaming.model for the Force.com PushTopic object.
@@ -22,6 +23,7 @@ import javax.persistence.*;
 @Table(name="PushTopic")
 @Entity(name="PushTopic")
 @com.force.sdk.jpa.annotation.CustomObject(readOnlySchema=true)
+@XmlRootElement
 public class PushTopic {
 
     public static final String KEY_PREFIX = "0IF";
@@ -37,7 +39,18 @@ public class PushTopic {
     protected java.util.Calendar lastModifiedDate;
     protected User lastModifiedBy;
     protected java.util.Calendar systemModstamp;
-    
+
+    public PushTopic() {
+
+    }
+
+    public PushTopic(String name, double apiVersion, String query, String description) {
+        this.name = name;
+        this.apiVersion = apiVersion;
+        this.query = query;
+        this.description = description;
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     public String getId() {

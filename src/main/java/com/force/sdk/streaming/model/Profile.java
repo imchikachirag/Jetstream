@@ -1,6 +1,7 @@
 package com.force.sdk.streaming.model;
 
 import javax.persistence.*;
+import javax.xml.bind.annotation.XmlType;
 
 /**
  * Java com.force.sdk.streaming.model for the Force.com Profile object.
@@ -752,6 +753,7 @@ public class Profile extends com.force.sdk.jpa.model.BaseForceObject {
      * by the Force.com database.
      **/
     @javax.annotation.Generated(value="com.force.sdk.codegen.ForceJPAClassGenerator")
+    @XmlType(name = "Profile.UserTypeEnum")
     public enum UserTypeEnum implements com.force.sdk.jpa.model.PicklistValueEnum {
 
         STANDARD(true,false,"Standard","Standard"),

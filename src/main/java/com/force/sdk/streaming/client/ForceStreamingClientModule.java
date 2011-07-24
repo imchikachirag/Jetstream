@@ -44,7 +44,7 @@ public class ForceStreamingClientModule extends AbstractModule {
 
     @Override
     protected void configure() {
-
+        bind(PushTopicManager.class);
     }
 
     @Provides

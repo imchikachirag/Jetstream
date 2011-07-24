@@ -6,12 +6,13 @@ import java.util.Map;
 /**
  * @author naamannewbold
  */
-public enum BayeuxExceptionMessage implements ExceptionMessageProvider {
-    INVALID_PUSH_TOPIC_NAME {
+public enum JsonExceptionMessage implements ExceptionMessageProvider {
+    MISSING_COMMAND {
+//        @Override
         public Map<String, Object> message() {
             Map<String, Object> message = new HashMap<String, Object>();
             message.put("code", name());
-            message.put("message", "Unable to find push topic.");
+            message.put("message", "No command was provided for this operation.");
             return message;
         }
     }

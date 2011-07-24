@@ -5,6 +5,6 @@ import java.util.Map;
 /**
  * @author naamannewbold
  */
-public interface BayeuxExceptionMessageProvider {
-    Map<String, Object> message();
+public interface ExceptionMessageProvider {
+    public Map<String, Object> message();
 }
