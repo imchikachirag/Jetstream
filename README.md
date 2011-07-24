@@ -24,6 +24,7 @@ The following instructions assume some knowledge of the Force.com platform.  If 
 Note: at some point in the future, the guide dependency will be abstracted out.
 
 ## Java Usage
+```java
         Injector injector = Guice.createInjector(new ForceStreamingClientModule());
         ForceBayeuxClient client = injector.getInstance(ForceBayeuxClient.class);
         PushTopicManager pushTopicManager = injector.getInstance(PushTopicManager.class);
@@ -34,12 +35,13 @@ Note: at some point in the future, the guide dependency will be abstracted out.
                 remote.deliver(getServerSession(), "/force", message, null);
             }
         });
-
+```
 
 ## Java Web Project Usage
 The primary use case intended for a web project is as a proxy. Due to cross-domain limitations, javascript cannot callout to the streaming API unless it's on force.com or salesforce.com. This servlet allows javascript to interact with the streaming API.
 
 6. Add these dependencies to your pom.xml
+
         <dependency>
             <groupId>com.force.sdk.streaming</groupId>
             <artifactId>streaming</artifactId>
