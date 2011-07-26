@@ -18,13 +18,14 @@ public class ForceStreamingResource extends GenericServlet {
     private static final Logger LOGGER = LoggerFactory.getLogger(ForceStreamingResource.class);
 
     public void init() {
-        LOGGER.debug("Initiating ForceStreamingResource");
+        LOGGER.debug("Starting ForceStreamingService...");
         BayeuxServer bayeux = (BayeuxServer)getServletContext().getAttribute(BayeuxServer.ATTRIBUTE);
         new ForceStreamingService(bayeux);
     }
 
     @Override
     public void service(ServletRequest servletRequest, ServletResponse servletResponse) throws ServletException, IOException {
+        LOGGER.error("ForceStreamingResource accessed directly.");
         throw new ServletException();
     }
 }

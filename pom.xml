@@ -151,6 +151,16 @@
             <artifactId>testng</artifactId>
             <version>${testng.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>jetty-server</artifactId>
+            <version>${eclipse.jetty.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>jetty-servlet</artifactId>
+            <version>${eclipse.jetty.version}</version>
+        </dependency>
 
         <!-- Logging -->
         <dependency>
@@ -191,6 +201,16 @@
                     <target>${java.version}</target>
                 </configuration>
             </plugin>
+            <plugin>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <environmentVariables>
+                        <FORCE_TESTDATABASE_URL>${env.FORCE_TESTDATABASE_URL}</FORCE_TESTDATABASE_URL>
+                        <TEST_PORT>${env.TEST_PORT}</TEST_PORT>
+                    </environmentVariables>
+                </configuration>
+            </plugin>
+
             <plugin>
                 <groupId>org.datanucleus</groupId>
                 <artifactId>maven-datanucleus-plugin</artifactId>
