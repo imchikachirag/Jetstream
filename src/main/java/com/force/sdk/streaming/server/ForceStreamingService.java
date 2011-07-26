@@ -4,6 +4,7 @@ import com.force.sdk.streaming.client.ForceBayeuxClient;
 import com.force.sdk.streaming.client.ForceStreamingClientModule;
 import com.force.sdk.streaming.client.PushTopicManager;
 import com.force.sdk.streaming.exception.BayeuxExceptionMessage;
+import com.force.sdk.streaming.exception.ExceptionMessageProvider;
 import com.force.sdk.streaming.exception.ForceStreamingException;
 import com.force.sdk.streaming.model.PushTopic;
 import com.google.inject.Guice;
@@ -56,7 +57,8 @@ public class ForceStreamingService extends AbstractService {
             });
         } catch (ForceStreamingException e) {
             LOGGER.debug("Invalid push topic, " + name);
-            remote.deliver(getServerSession(), "/force", BayeuxExceptionMessage.INVALID_PUSH_TOPIC_NAME.message(), null);
+            ExceptionMessageProvider invalidPushTopicError = BayeuxExceptionMessage.INVALID_PUSH_TOPIC_NAME;
+            remote.deliver(getServerSession(), "/force", invalidPushTopicError.message(), null);
         }
     }
 

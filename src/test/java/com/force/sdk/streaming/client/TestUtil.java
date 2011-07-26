@@ -3,6 +3,7 @@ package com.force.sdk.streaming.client;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.Table;
+import java.util.Set;
 
 /**
  * @author naamannewbold
@@ -12,46 +13,27 @@ public class TestUtil {
     @Inject
     EntityManager entityManager;
 
-    public void clean(String table) {
+
+    public void clean(String table, Set<String> names) {
         entityManager.getTransaction().begin();
-        entityManager.createQuery("DELETE From " + table).executeUpdate();
+
+        // criteria builder doesn't support delete for some reason, so
+        // doing a conditional parameter in this fugly way
+        if (names == null)
+            entityManager.createQuery("Delete From " + table).executeUpdate();
+        else
+            entityManager.createQuery("DELETE From " + table +  " Where Name In :names")
+                .setParameter("names", names).executeUpdate();
+
         entityManager.getTransaction().commit();
     }
 
-    public void clean(Class<?> classWithTableAnnotation) {
+    public void clean(Class<?> classWithTableAnnotation, Set<String> names) {
         if (classWithTableAnnotation.isAnnotationPresent(Table.class)) {
-            clean(classWithTableAnnotation.getAnnotation(Table.class).name());
+            clean(classWithTableAnnotation.getAnnotation(Table.class).name(), names);
         } else {
-            clean(classWithTableAnnotation.getCanonicalName());
+            clean(classWithTableAnnotation.getCanonicalName(), names);
         }
-        clean(classWithTableAnnotation.getAnnotation(Table.class).name());
     }
 
-    public void insert(Object insertable) {
-        entityManager.getTransaction().begin();
-        entityManager.persist(insertable);
-        entityManager.getTransaction().commit();
-    }
-
-    public void update(Object updateable) {
-        entityManager.getTransaction().begin();
-        entityManager.merge(updateable);
-        entityManager.getTransaction().commit();
-    }
-
-    public void delete(Object deleteable) {
-        entityManager.getTransaction().begin();
-        entityManager.remove(deleteable);
-        entityManager.getTransaction().commit();
-    }
-
-//    public void upsert(BaseForceObject upsertable) {
-//        entityManager.getTransaction().begin();
-//        if (upsertable.getId() != null) {
-//            entityManager.merge(upsertable);
-//        } else {
-//            entityManager.persist(upsertable);
-//        }
-//        entityManager.getTransaction().commit();
-//    }
 }

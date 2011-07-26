@@ -51,21 +51,22 @@ public class PushTopicManager {
         return pushTopic;
     }
 
-    private void copyStandardValues(PushTopic pt, PushTopic pushTopic) {
-        pushTopic.setName(getIfNonNull(pt.getName(), pushTopic.getName()));
-        pushTopic.setApiVersion(getIfNonNull(pt.getApiVersion(), pushTopic.getApiVersion()));
-        pushTopic.setQuery(getIfNonNull(pt.getQuery(), pushTopic.getQuery()));
-        pushTopic.setDescription(getIfNonNull(pt.getDescription(), pushTopic.getDescription()));
-    }
-
-    private <T> T getIfNonNull(T val, T defaultVal) {
-        return (val != null) ? val : defaultVal;
-    }
-
     public void delete(String pushTopicId) {
         PushTopic pushTopic = em.find(PushTopic.class, pushTopicId);
         em.getTransaction().begin();
         em.remove(pushTopic);
         em.getTransaction().commit();
     }
+
+    /* package */ void copyStandardValues(PushTopic pt, PushTopic pushTopic) {
+        if (pt.getName() != null) pushTopic.setName(pt.getName());
+        if (pt.getApiVersion() != 0.0) pushTopic.setApiVersion(pt.getApiVersion());
+        if (pt.getQuery() != null) pushTopic.setQuery(pt.getQuery());
+        if (pt.getDescription() != null) pushTopic.setDescription(pt.getDescription());
+    }
+
+    private <T> T getIfNonNull(T val, T defaultVal) {
+        return (val != null) ? val : defaultVal;
+    }
+
 }

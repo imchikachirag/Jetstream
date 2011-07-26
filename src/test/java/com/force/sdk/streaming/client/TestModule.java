@@ -18,6 +18,7 @@ public class TestModule extends AbstractModule {
     @Override
     protected void configure() {
         bind(TestUtil.class);
+        bind(PushTopicManager.class);
     }
 
     @Provides
