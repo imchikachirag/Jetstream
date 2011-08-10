@@ -1,7 +1,7 @@
 # Salesforce Streaming API Toolkit For Java
-The Salesforce Streaming API is a Bayeux implementation built on the Force.com platform.  The toolkit for Java provides a simple way to configure a connection to the Streaming API.
+The Force.com Streaming API is a Bayeux implementation built on the Force.com platform.  The toolkit for Java provides a simple way to configure a connection to the Streaming API.  For more information on the Force.com Streaming API, please review the [guide](http://wiki.developerforce.com/index.php/Getting_Started_with_the_Force.com_Streaming_API).
 
-The following instructions assume some knowledge of the Force.com platform.  If you are unfamiliar, please visit http://developer.force.com.
+The following instructions assume some knowledge of the Force.com platform.  If you are unfamiliar with Force.com, please visit http://developer.force.com.
 
 ## Install
 1. git clone git://github.com/naamannewbold/streaming.git
