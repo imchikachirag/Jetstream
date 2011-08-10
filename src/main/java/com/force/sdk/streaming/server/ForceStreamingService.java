@@ -59,9 +59,11 @@ public class ForceStreamingService extends AbstractService {
 
         try {
             validateName(name);
+            // TODO: figure out if a query is necessary for validation here
+//            PushTopic topic = pushTopicManager.getTopicByName(name);
             LOGGER.info("Processing " + name + " topic");
-
-            PushTopic topic = pushTopicManager.getTopicByName(name);
+            PushTopic topic = new PushTopic();
+            topic.setName(name);
             client.subscribeTo(topic, new ClientSessionChannel.MessageListener() {
                 public void onMessage(ClientSessionChannel channel, Message message) {
                     LOGGER.debug("Received message on " + channel.toString());
