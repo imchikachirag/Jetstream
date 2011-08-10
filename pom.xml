@@ -12,7 +12,7 @@
     <properties>
         <force.api.version>22.0.0</force.api.version>
         <force.sdk.version>22.0.2-BETA</force.sdk.version>
-        <cometd.version>2.3.0</cometd.version>
+        <cometd.version>2.3.1</cometd.version>
         <eclipse.jetty.version>7.4.0.v20110414</eclipse.jetty.version>
         <testng.version>6.0.1</testng.version>
         <guice.version>3.0</guice.version>
@@ -186,6 +186,11 @@
                 </exclusion>
             </exclusions>
             <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.google.collections</groupId>
+            <artifactId>google-collections</artifactId>
+            <version>1.0</version>
         </dependency>
 
     </dependencies>

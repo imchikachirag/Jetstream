@@ -1,5 +1,6 @@
 package com.force.sdk.streaming.server;
 
+import com.force.sdk.streaming.client.Defaults;
 import com.force.sdk.streaming.client.ForceBayeuxClient;
 import com.force.sdk.streaming.client.ForceStreamingClientModule;
 import com.force.sdk.streaming.client.PushTopicManager;
@@ -17,6 +18,7 @@ import org.cometd.server.AbstractService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.servlet.ServletConfig;
 import java.util.Map;
 
 /**
@@ -31,13 +33,24 @@ public class ForceStreamingService extends AbstractService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ForceStreamingService.class);
 
-    public ForceStreamingService(BayeuxServer bayeuxServer) {
+    public ForceStreamingService(BayeuxServer bayeuxServer, ServletConfig config) {
         super(bayeuxServer, "ForceStreamingService");
         LOGGER.info("Creating bayeux service at /service/force");
-        Injector injector = Guice.createInjector(new ForceStreamingClientModule());
+        Injector injector = Guice.createInjector(new ForceStreamingClientModule(
+                getParam(config, Defaults.CONNECTION_NAME)
+              , getParam(config, Defaults.PERSISTENCE_UNIT)
+              , Integer.valueOf(getParam(config, Defaults.TIMEOUT))
+        ));
         client = injector.getInstance(ForceBayeuxClient.class);
         pushTopicManager = injector.getInstance(PushTopicManager.class);
         addService("/service/force", "processForce");
+    }
+
+    private String getParam(ServletConfig config, Defaults defaults) {
+        String param = config.getInitParameter(defaults.name());
+        if (param == null)
+            param = defaults.getValue();
+        return param;
     }
 
     public void processForce(final ServerSession remote, final Message message) throws InterruptedException {

@@ -9,7 +9,8 @@ public class ForceStreamingServiceTest extends AbstractForceStreamingServiceTest
 
     @Test
     public void testStreamingService() {
-
+//        ForceStreamingService stream = new ForceStreamingService(bayeux);
+//        stream.processForce();
     }
 
 }

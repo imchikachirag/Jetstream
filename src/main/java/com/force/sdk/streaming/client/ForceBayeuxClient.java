@@ -2,8 +2,8 @@ package com.force.sdk.streaming.client;
 
 import com.force.sdk.connector.ForceServiceConnector;
 import com.force.sdk.streaming.exception.ForceStreamingException;
-import com.force.sdk.streaming.util.ForceStreamingResource;
 import com.force.sdk.streaming.model.PushTopic;
+import com.force.sdk.streaming.util.ForceStreamingResource;
 import com.google.inject.Inject;
 import com.sforce.ws.ConnectionException;
 import org.cometd.bayeux.client.ClientSessionChannel;
@@ -18,6 +18,7 @@ public class ForceBayeuxClient {
 
     private final BayeuxClient bayeuxClient;
     private static final Logger LOGGER = LoggerFactory.getLogger(ForceBayeuxClient.class) ;
+    private static final int HANDSHAKE_TIMEOUT = 10000;
 
     @Inject
     public ForceBayeuxClient(ForceServiceConnector connector, BayeuxClient bayeuxClient) throws ConnectionException, ForceStreamingException {
@@ -34,7 +35,7 @@ public class ForceBayeuxClient {
     public void handshake() throws InterruptedException {
         LOGGER.debug("Handshaking...");
         bayeuxClient.handshake();
-        boolean shaken = bayeuxClient.waitFor(30000, BayeuxClient.State.CONNECTED);
+        boolean shaken = bayeuxClient.waitFor(HANDSHAKE_TIMEOUT, BayeuxClient.State.CONNECTED);
         if (shaken)
             LOGGER.info("Handshake complete");
         else {
