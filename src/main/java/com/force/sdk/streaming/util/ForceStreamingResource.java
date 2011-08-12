@@ -1,15 +1,12 @@
 package com.force.sdk.streaming.util;
 
 /**
- * Created by IntelliJ IDEA.
- * User: naamannewbold
- * Date: 6/9/11
- * Time: 1:06 PM
- * To change this template use File | Settings | File Templates.
+ * @author naamannewbold
  */
 public enum ForceStreamingResource {
-    CHANNEL_PREFIX ("/")
-  , RESOURCE_ENDPOINT ("/cometd");
+    CHANNEL_PREFIX ("/topic/")
+  , RESOURCE_ENDPOINT ("/cometd/23.0")
+  , PROTOCOL ("https");
 
     private String value;
 

@@ -42,6 +42,7 @@ public class ForceStreamingService extends AbstractService {
               , Integer.valueOf(getParam(config, Defaults.TIMEOUT))
         ));
         client = injector.getInstance(ForceBayeuxClient.class);
+
         pushTopicManager = injector.getInstance(PushTopicManager.class);
         addService("/service/force", "processForce");
     }

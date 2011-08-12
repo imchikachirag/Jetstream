@@ -34,10 +34,13 @@
     <logger name="org.cometd.bayeux.client.ClientSessionChannel">
         <level value="DEBUG" />
     </logger>
+    <logger name="org.cometd.client">
+        <level value="DEBUG" />
+    </logger>
 
   <!-- Root Logger -->
   <root>
-    <priority value="INFO" />
+    <priority value="DEBUG" />
     <appender-ref ref="console" />
   </root>
 

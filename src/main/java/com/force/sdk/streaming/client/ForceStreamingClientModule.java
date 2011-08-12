@@ -7,9 +7,6 @@ import com.force.sdk.streaming.exception.ForceStreamingException;
 import com.force.sdk.streaming.util.ForceStreamingResource;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
-import org.cometd.client.BayeuxClient;
-import org.cometd.client.transport.ClientTransport;
-import org.cometd.client.transport.LongPollingTransport;
 import org.eclipse.jetty.client.HttpClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,7 +15,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -65,27 +61,27 @@ public class ForceStreamingClientModule extends AbstractModule {
     // TODO: client.start() could potentially have some side effects.
     // Need to understand more of what's going on under the hood.
     @Provides
-    BayeuxClient provideBayeuxClient() throws Exception {
-        LOGGER.info("Providing bayeux client for connection name", connectionName);
-
-        Map<ForceConnectionProperty, String> connectionProperties = ForceConnectorUtils.loadConnectorPropsFromName(connectionName);
-        if (connectionProperties == null || !connectionProperties.containsKey(ForceConnectionProperty.ENDPOINT))
-            throw new ForceStreamingException("Unable to find connection named " + connectionName);
-
-        String baseUrl = "http://" + connectionProperties.get(ForceConnectionProperty.ENDPOINT);
-        baseUrl += ForceStreamingResource.RESOURCE_ENDPOINT.getValue();
+    HttpClient provideHttpClient() {
+        LOGGER.info("Providing http client for connection name", connectionName);
 
         HttpClient client = new HttpClient();
         client.setConnectorType(HttpClient.CONNECTOR_SELECT_CHANNEL);
         client.setConnectTimeout(timeoutOption);
         client.setTimeout(timeoutOption);
 
-        LOGGER.debug("Starting HttpClient", client);
-        client.start();
+        return client;
+    }
 
-        Map<String, Object> clientOptions = new HashMap<String, Object>();
-        clientOptions.put(ClientTransport.TIMEOUT_OPTION, timeoutOption);
+    @Provides
+    String provideBaseUrl() throws ForceStreamingException, IOException {
+        Map<ForceConnectionProperty, String> connectionProperties = ForceConnectorUtils.loadConnectorPropsFromName(connectionName);
+        if (connectionProperties == null || !connectionProperties.containsKey(ForceConnectionProperty.ENDPOINT))
+            throw new ForceStreamingException("Unable to find connection named " + connectionName);
 
-        return new BayeuxClient(baseUrl, LongPollingTransport.create(clientOptions, client));
+        String baseUrl = ForceStreamingResource.PROTOCOL.getValue() + "://"
+                + connectionProperties.get(ForceConnectionProperty.ENDPOINT);
+        baseUrl += ForceStreamingResource.RESOURCE_ENDPOINT.getValue();
+        LOGGER.debug("Providing base URL: " + baseUrl);
+        return baseUrl;
     }
 }

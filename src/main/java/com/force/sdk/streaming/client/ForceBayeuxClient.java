@@ -6,25 +6,89 @@ import com.force.sdk.streaming.model.PushTopic;
 import com.force.sdk.streaming.util.ForceStreamingResource;
 import com.google.inject.Inject;
 import com.sforce.ws.ConnectionException;
+import org.cometd.bayeux.Channel;
+import org.cometd.bayeux.Message;
 import org.cometd.bayeux.client.ClientSessionChannel;
 import org.cometd.client.BayeuxClient;
+import org.cometd.client.transport.ClientTransport;
+import org.cometd.client.transport.LongPollingTransport;
+import org.eclipse.jetty.client.ContentExchange;
+import org.eclipse.jetty.client.HttpClient;
+import org.eclipse.jetty.http.HttpHeaders;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.Marker;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
+ * Client for connecting to the Force.com Streaming API. The client is configured by injecting
+ * a connector, client, and URL from ForceStreamingClientModule.
  * @author naamannewbold
  */
 public class ForceBayeuxClient {
 
-    private final BayeuxClient bayeuxClient;
+    final BayeuxClient bayeuxClient;
+    final ForceServiceConnector connector;
+    final static String OAUTH_OPTION = "oauthSid";
     private static final Logger LOGGER = LoggerFactory.getLogger(ForceBayeuxClient.class) ;
-    private static final int HANDSHAKE_TIMEOUT = 10000;
+    private static final int HANDSHAKE_TIMEOUT = 5000;
 
     @Inject
-    public ForceBayeuxClient(ForceServiceConnector connector, BayeuxClient bayeuxClient) throws ConnectionException, ForceStreamingException {
+    public ForceBayeuxClient(ForceServiceConnector connector, HttpClient httpClient, String baseUrl) throws Exception {
         requireConnection(connector);
-        this.bayeuxClient = bayeuxClient;
-        this.bayeuxClient.setCookie("sid", connector.getConnection().getSessionHeader().getSessionId());
+        this.connector = connector;
+        LOGGER.debug("Setting up bayeux client for " + baseUrl);
+        System.out.println("Setting up bayeux client for " + baseUrl);
+        bayeuxClient = setupBayeuxClient(httpClient, baseUrl);
+        bayeuxClient.setCookie("sid", connector.getConnection().getSessionHeader().getSessionId());
+        bayeuxClient.setDebugEnabled(true);
+    }
+
+    private BayeuxClient setupBayeuxClient(HttpClient httpClient, String baseUrl) throws Exception {
+        Map<String, Object> clientOptions = new HashMap<String, Object>() {{
+            put(ClientTransport.TIMEOUT_OPTION, 30000);
+//            put(OAUTH_OPTION, connector.getConnection().getSessionHeader().getSessionId());
+        }};
+
+        LOGGER.debug("Starting HttpClient", httpClient);
+        httpClient.start();
+
+        return new BayeuxClient(baseUrl, new OauthLongPollingTransport(clientOptions, httpClient, connector));
+    }
+
+    /*
+     * Extension of the LongPollingTransport to add the OAuth Authorization header to
+     */
+    private static final class OauthLongPollingTransport extends LongPollingTransport {
+
+        private ForceServiceConnector connector;
+
+        public OauthLongPollingTransport(Map<String, Object> options, HttpClient httpClient) {
+            this(options, httpClient, null);
+        }
+
+        public OauthLongPollingTransport(Map<String, Object> options, HttpClient httpClient, ForceServiceConnector connector) {
+            super(options, httpClient);
+            this.connector = connector;
+        }
+
+        @Override
+        protected void customize(ContentExchange exchange) {
+            super.customize(exchange);
+            String oauthSid = null;
+            try {
+                oauthSid = connector.getConnection().getSessionHeader().getSessionId();
+            } catch (ConnectionException e) {
+                // we have to ignore this exception in order to utilize the customize method
+                LOGGER.warn(Marker.ANY_MARKER, "Unable to get Session Id", e);
+            }
+
+            LOGGER.debug("Adding OAuth header to request: OAuth " + oauthSid);
+            System.out.println(oauthSid);
+            exchange.setRequestHeader(HttpHeaders.AUTHORIZATION, "OAuth " + oauthSid);
+        }
     }
 
     private void requireConnection(ForceServiceConnector connector) throws ForceStreamingException, ConnectionException {
@@ -34,7 +98,14 @@ public class ForceBayeuxClient {
 
     public void handshake() throws InterruptedException {
         LOGGER.debug("Handshaking...");
-        bayeuxClient.handshake();
+        bayeuxClient.handshake(HANDSHAKE_TIMEOUT);
+        bayeuxClient.getChannel(Channel.META_HANDSHAKE).addListener(new ClientSessionChannel.ClientSessionChannelListener() {
+            public void onMessage(ClientSessionChannel sessionChannel, Message message) {
+                System.out.println("Recieved handshake channel message");
+                System.out.println(message.isSuccessful());
+                System.out.println(message.getJSON());
+            }
+        });
         boolean shaken = bayeuxClient.waitFor(HANDSHAKE_TIMEOUT, BayeuxClient.State.CONNECTED);
         if (shaken)
             LOGGER.info("Handshake complete");

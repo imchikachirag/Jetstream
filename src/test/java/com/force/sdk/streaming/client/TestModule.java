@@ -1,19 +1,29 @@
 package com.force.sdk.streaming.client;
 
-import com.force.sdk.connector.ForceConnectorConfig;
 import com.force.sdk.connector.ForceServiceConnector;
 import com.google.inject.AbstractModule;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
 import com.google.inject.Provides;
 import com.sforce.ws.ConnectionException;
+import org.eclipse.jetty.client.HttpClient;
 
 import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
 
 /**
  * @author naamannewbold
  */
 public class TestModule extends AbstractModule {
+
+    Injector injector;
+
+    public TestModule() {
+        injector = Guice.createInjector(
+            new ForceStreamingClientModule(
+                    TestConstants.CONNECTION_NAME.getValue(), TestConstants.PERSISTENCE_UNIT.getValue(), 30000
+            )
+        );
+    }
 
     @Override
     protected void configure() {
@@ -23,14 +33,21 @@ public class TestModule extends AbstractModule {
 
     @Provides
     EntityManager provideEntityManager() {
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory(TestConstants.PERSISTENCE_UNIT.getValue());
-        return emf.createEntityManager();
+        return injector.getInstance(EntityManager.class);
     }
 
     @Provides
     ForceServiceConnector provideConnector() throws ConnectionException {
-        ForceConnectorConfig config = new ForceConnectorConfig();
-        config.setConnectionUrl(TestConstants.FORCE_DATABASE_URL.getValue());
-        return new ForceServiceConnector(config);
+        return injector.getInstance(ForceServiceConnector.class);
+    }
+
+    @Provides
+    String provideBaseUrl() {
+        return injector.getInstance(String.class);
+    }
+
+    @Provides
+    HttpClient provideHttpClient() {
+        return injector.getInstance(HttpClient.class);
     }
 }
