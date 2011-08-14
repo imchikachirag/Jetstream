@@ -10,9 +10,12 @@ import com.force.sdk.streaming.exception.ForceStreamingException;
 import com.force.sdk.streaming.model.PushTopic;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
+import org.cometd.bayeux.ChannelId;
 import org.cometd.bayeux.Message;
 import org.cometd.bayeux.client.ClientSessionChannel;
 import org.cometd.bayeux.server.BayeuxServer;
+import org.cometd.bayeux.server.ConfigurableServerChannel;
+import org.cometd.bayeux.server.ServerChannel;
 import org.cometd.bayeux.server.ServerSession;
 import org.cometd.server.AbstractService;
 import org.slf4j.Logger;
@@ -44,7 +47,8 @@ public class ForceStreamingService extends AbstractService {
         client = injector.getInstance(ForceBayeuxClient.class);
 
         pushTopicManager = injector.getInstance(PushTopicManager.class);
-        addService("/service/force", "processForce");
+        bayeuxServer.addListener(new ForceStreamingServiceListener());
+        addService("/service/force/*", "processForce");
     }
 
     private String getParam(ServletConfig config, Defaults defaults) {
@@ -64,10 +68,11 @@ public class ForceStreamingService extends AbstractService {
 //            PushTopic topic = pushTopicManager.getTopicByName(name);
             LOGGER.info("Processing " + name + " topic");
             PushTopic topic = new PushTopic();
-            topic.setName(name);
+            topic.setName("products");
             client.subscribeTo(topic, new ClientSessionChannel.MessageListener() {
                 public void onMessage(ClientSessionChannel channel, Message message) {
-                    LOGGER.debug("Received message on " + channel.toString());
+                    System.out.println("Received message on " + channel.toString());
+                    System.out.println("Delivering: " + message.getJSON());
                     remote.deliver(getServerSession(), "/force", message, null);
                 }
             });
@@ -83,4 +88,30 @@ public class ForceStreamingService extends AbstractService {
             throw new ForceStreamingException("Invalid push topic name.");
     }
 
+    static class ForceStreamingServiceListener implements BayeuxServer.ChannelListener {
+        @Override
+        public void channelAdded(ServerChannel serverChannel) {
+            String channelName = parseChannelName(serverChannel.getChannelId());
+            System.out.println("ForceStreamingServiceListener.channelAdded: " + serverChannel.getChannelId());
+            for (ServerSession s : serverChannel.getSubscribers()) {
+                System.out.println("Subscriber: " + s.getId());
+            }
+        }
+
+        private String parseChannelName(ChannelId channelId) {
+            for (int i = 0; i < channelId.depth(); i++)
+                System.out.println("Channel '" + channelId + "' Segment: " + channelId.getSegment(i));
+            return "";
+        }
+
+        @Override
+        public void channelRemoved(String s) {
+            //To change body of implemented methods use File | Settings | File Templates.
+        }
+
+        @Override
+        public void configureChannel(ConfigurableServerChannel configurableServerChannel) {
+            System.out.println("ForceStreamingServiceListener.configureChannel");
+        }
+    }
 }

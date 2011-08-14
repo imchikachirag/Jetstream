@@ -6,8 +6,6 @@ import com.force.sdk.streaming.model.PushTopic;
 import com.force.sdk.streaming.util.ForceStreamingResource;
 import com.google.inject.Inject;
 import com.sforce.ws.ConnectionException;
-import org.cometd.bayeux.Channel;
-import org.cometd.bayeux.Message;
 import org.cometd.bayeux.client.ClientSessionChannel;
 import org.cometd.client.BayeuxClient;
 import org.cometd.client.transport.ClientTransport;
@@ -40,15 +38,13 @@ public class ForceBayeuxClient {
         requireConnection(connector);
         this.connector = connector;
         LOGGER.debug("Setting up bayeux client for " + baseUrl);
-        System.out.println("Setting up bayeux client for " + baseUrl);
         bayeuxClient = setupBayeuxClient(httpClient, baseUrl);
-        bayeuxClient.setCookie("sid", connector.getConnection().getSessionHeader().getSessionId());
         bayeuxClient.setDebugEnabled(true);
     }
 
     private BayeuxClient setupBayeuxClient(HttpClient httpClient, String baseUrl) throws Exception {
         Map<String, Object> clientOptions = new HashMap<String, Object>() {{
-            put(ClientTransport.TIMEOUT_OPTION, 30000);
+            put(ClientTransport.TIMEOUT_OPTION, 20000);
 //            put(OAUTH_OPTION, connector.getConnection().getSessionHeader().getSessionId());
         }};
 
@@ -86,7 +82,6 @@ public class ForceBayeuxClient {
             }
 
             LOGGER.debug("Adding OAuth header to request: OAuth " + oauthSid);
-            System.out.println(oauthSid);
             exchange.setRequestHeader(HttpHeaders.AUTHORIZATION, "OAuth " + oauthSid);
         }
     }
@@ -99,15 +94,9 @@ public class ForceBayeuxClient {
     public void handshake() throws InterruptedException {
         LOGGER.debug("Handshaking...");
         bayeuxClient.handshake(HANDSHAKE_TIMEOUT);
-        bayeuxClient.getChannel(Channel.META_HANDSHAKE).addListener(new ClientSessionChannel.ClientSessionChannelListener() {
-            public void onMessage(ClientSessionChannel sessionChannel, Message message) {
-                System.out.println("Recieved handshake channel message");
-                System.out.println(message.isSuccessful());
-                System.out.println(message.getJSON());
-            }
-        });
-        boolean shaken = bayeuxClient.waitFor(HANDSHAKE_TIMEOUT, BayeuxClient.State.CONNECTED);
-        if (shaken)
+        boolean shaken = bayeuxClient.waitFor(HANDSHAKE_TIMEOUT, BayeuxClient.State.CONNECTING);
+
+        if (bayeuxClient.isHandshook())
             LOGGER.info("Handshake complete");
         else {
             LOGGER.info("Unable to complete handshake. Disconnecting from service.");

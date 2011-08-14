@@ -1,5 +1,7 @@
 package com.force.sdk.streaming.model;
 
+import com.google.gson.Gson;
+
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -49,6 +51,10 @@ public class PushTopic {
         this.apiVersion = apiVersion;
         this.query = query;
         this.description = description;
+    }
+
+    public String toString() {
+        return new Gson().toJson(this).toString();
     }
 
     @Id

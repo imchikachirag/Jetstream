@@ -14,33 +14,31 @@
   <logger name="com.force.sdk.connector">
     <level value="TRACE" />
   </logger>
+    <logger name="com.sforce">
+        <level value="TRACE" />
+    </logger>
 
-  <logger name="com.force.sdk.streaming.client.ForceBayeuxClient">
+  <logger name="com.force.sdk.streaming">
       <level value="DEBUG" />
   </logger>
-
-    <logger name="com.force.sdk.streaming.client.ForceStreamingClientModule">
-        <level value="DEBUG" />
+    <logger name="com.force.sdk.connector">
+        <level value="TRACE" />
     </logger>
 
-    <logger name="com.force.sdk.streaming.server.ForceStreamingService">
-        <level value="DEBUG" />
-    </logger>
-
-    <logger name="com.force.sdk.streaming.server.ForceStreamingResource">
-        <level value="DEBUG" />
-    </logger>
-
-    <logger name="org.cometd.bayeux.client.ClientSessionChannel">
+    <logger name="org.cometd.bayeux">
         <level value="DEBUG" />
     </logger>
     <logger name="org.cometd.client">
         <level value="DEBUG" />
     </logger>
 
+    <logger name="org.eclipse.jetty">
+        <level value="TRACE" />
+    </logger>
+
   <!-- Root Logger -->
   <root>
-    <priority value="DEBUG" />
+    <priority value="WARN" />
     <appender-ref ref="console" />
   </root>
 

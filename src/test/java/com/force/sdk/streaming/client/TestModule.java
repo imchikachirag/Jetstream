@@ -1,10 +1,8 @@
 package com.force.sdk.streaming.client;
 
 import com.force.sdk.connector.ForceServiceConnector;
-import com.google.inject.AbstractModule;
-import com.google.inject.Guice;
-import com.google.inject.Injector;
-import com.google.inject.Provides;
+import com.force.sdk.streaming.model.PushTopic;
+import com.google.inject.*;
 import com.sforce.ws.ConnectionException;
 import org.eclipse.jetty.client.HttpClient;
 
@@ -49,5 +47,20 @@ public class TestModule extends AbstractModule {
     @Provides
     HttpClient provideHttpClient() {
         return injector.getInstance(HttpClient.class);
+    }
+
+    @Provides
+    @Inject
+    PushTopic providePushTopic(EntityManager em) {
+        PushTopic pushTopic = new PushTopic(
+                "PT" + System.currentTimeMillis()
+              , StreamingApiVersion.LATEST.version
+              , "Select Id, Name From StreamingEntity__c"
+              , "streamingtopic"
+        );
+        em.getTransaction().begin();
+        em.persist(pushTopic);
+        em.getTransaction().commit();
+        return em.find(PushTopic.class, pushTopic.getId());
     }
 }

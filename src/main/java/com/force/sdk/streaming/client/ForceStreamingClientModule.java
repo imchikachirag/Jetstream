@@ -62,7 +62,7 @@ public class ForceStreamingClientModule extends AbstractModule {
     // Need to understand more of what's going on under the hood.
     @Provides
     HttpClient provideHttpClient() {
-        LOGGER.info("Providing http client for connection name", connectionName);
+        LOGGER.info("Providing http client for connection name " + connectionName);
 
         HttpClient client = new HttpClient();
         client.setConnectorType(HttpClient.CONNECTOR_SELECT_CHANNEL);

@@ -11,9 +11,13 @@
     </layout>
   </appender>
 
-  <logger name="com.force.sdk.connector">
-    <level value="TRACE" />
-  </logger>
+
+    <logger name="com.force.sdk.connector">
+      <level value="TRACE" />
+    </logger>
+      <logger name="com.sforce">
+          <level value="TRACE" />
+      </logger>
 
   <logger name="com.force.sdk.streaming.client.ForceBayeuxClient">
       <level value="DEBUG" />
@@ -31,10 +35,7 @@
         <level value="DEBUG" />
     </logger>
 
-    <logger name="org.cometd.bayeux.client.ClientSessionChannel">
-        <level value="DEBUG" />
-    </logger>
-    <logger name="org.cometd.client">
+    <logger name="org.cometd">
         <level value="DEBUG" />
     </logger>
 

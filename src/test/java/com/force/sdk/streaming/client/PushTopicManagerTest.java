@@ -91,11 +91,11 @@ public class PushTopicManagerTest {
      */
     @Test
     public void testStandardPushTopicValuesCopied() {
-        PushTopic source = new PushTopic("source", StreamingApiVersion.V20.version, "Select Id From Source", "source");
-        PushTopic destination = new PushTopic("dest", StreamingApiVersion.V22.version, "Select Id From Dest", "dest");
+        PushTopic source = new PushTopic("source", StreamingApiVersion.V22.version, "Select Id From Source", "source");
+        PushTopic destination = new PushTopic("dest", StreamingApiVersion.V23.version, "Select Id From Dest", "dest");
         pushTopicManager.copyStandardValues(source, destination);
         Assert.assertEquals(destination.getName(), "source");
-        Assert.assertEquals(destination.getApiVersion(), StreamingApiVersion.V20.version);
+        Assert.assertEquals(destination.getApiVersion(), StreamingApiVersion.V22.version);
         Assert.assertEquals(destination.getQuery(), "Select Id From Source");
         Assert.assertEquals(destination.getDescription(), "source");
     }

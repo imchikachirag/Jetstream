@@ -6,7 +6,8 @@ package com.force.sdk.streaming.util;
 public enum ForceStreamingResource {
     CHANNEL_PREFIX ("/topic/")
   , RESOURCE_ENDPOINT ("/cometd/23.0")
-  , PROTOCOL ("https");
+    // TODO: parameterize http vs https -- need to be able to toggle for debugging
+  , PROTOCOL ("http");
 
     private String value;
 

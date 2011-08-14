@@ -16,8 +16,10 @@
                 <class>com.force.sdk.streaming.model.User</class>
                 <class>com.force.sdk.streaming.model.UserLicense</class>
                 <class>com.force.sdk.streaming.model.UserRole</class>
+                <class>com.force.sdk.streaming.model.StreamingEntity</class>
                 <properties>
                         <property name="datanucleus.storeManagerType" value="force" />
+                        <property name="datanucleus.autoCreateSchema" value="true" />
                         <!--<property name="force.schemaCreateClient" value="true" />-->
                 </properties>
         </persistence-unit>
