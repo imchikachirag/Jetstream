@@ -4,8 +4,6 @@ import com.force.sdk.streaming.client.Defaults;
 import com.force.sdk.streaming.client.ForceBayeuxClient;
 import com.force.sdk.streaming.client.ForceStreamingClientModule;
 import com.force.sdk.streaming.client.PushTopicManager;
-import com.force.sdk.streaming.exception.BayeuxExceptionMessage;
-import com.force.sdk.streaming.exception.ExceptionMessageProvider;
 import com.force.sdk.streaming.exception.ForceStreamingException;
 import com.force.sdk.streaming.model.PushTopic;
 import com.google.inject.Guice;
@@ -22,6 +20,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.servlet.ServletConfig;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -47,8 +47,8 @@ public class ForceStreamingService extends AbstractService {
         client = injector.getInstance(ForceBayeuxClient.class);
 
         pushTopicManager = injector.getInstance(PushTopicManager.class);
-        bayeuxServer.addListener(new ForceStreamingServiceListener());
-        addService("/service/force/*", "processForce");
+        bayeuxServer.addListener(new ForceStreamingServiceListener(client));
+        addService("/service/force", "processForce");
     }
 
     private String getParam(ServletConfig config, Defaults defaults) {
@@ -61,26 +61,26 @@ public class ForceStreamingService extends AbstractService {
     public void processForce(final ServerSession remote, final Message message) throws InterruptedException {
         Map<String, Object> input = message.getDataAsMap();
         String name = (String)input.get("name");
-
-        try {
-            validateName(name);
-            // TODO: figure out if a query is necessary for validation here
-//            PushTopic topic = pushTopicManager.getTopicByName(name);
-            LOGGER.info("Processing " + name + " topic");
-            PushTopic topic = new PushTopic();
-            topic.setName("products");
-            client.subscribeTo(topic, new ClientSessionChannel.MessageListener() {
-                public void onMessage(ClientSessionChannel channel, Message message) {
-                    System.out.println("Received message on " + channel.toString());
-                    System.out.println("Delivering: " + message.getJSON());
-                    remote.deliver(getServerSession(), "/force", message, null);
-                }
-            });
-        } catch (ForceStreamingException e) {
-            LOGGER.debug("Invalid push topic, " + name);
-            ExceptionMessageProvider invalidPushTopicError = BayeuxExceptionMessage.INVALID_PUSH_TOPIC_NAME;
-            remote.deliver(getServerSession(), "/force", invalidPushTopicError.message(), null);
-        }
+        System.out.println("Ignoring " + name + " service request");
+//        try {
+//            validateName(name);
+//            // TODO: figure out if a query is necessary for validation here
+////            PushTopic topic = pushTopicManager.getTopicByName(name);
+//            LOGGER.info("Processing " + name + " topic");
+//            PushTopic topic = new PushTopic();
+//            topic.setName(name);
+//            client.subscribeTo(topic, new ClientSessionChannel.MessageListener() {
+//                public void onMessage(ClientSessionChannel channel, Message message) {
+//                    System.out.println("Received message on " + channel.toString());
+//                    System.out.println("Delivering: " + message.getJSON());
+//                    remote.deliver(getServerSession(), "/force", message, null);
+//                }
+//            });
+//        } catch (ForceStreamingException e) {
+//            LOGGER.debug("Invalid push topic, " + name);
+//            ExceptionMessageProvider invalidPushTopicError = BayeuxExceptionMessage.INVALID_PUSH_TOPIC_NAME;
+//            remote.deliver(getServerSession(), "/force", invalidPushTopicError.message(), null);
+//        }
     }
 
     private void validateName(String name) throws ForceStreamingException {
@@ -88,30 +88,61 @@ public class ForceStreamingService extends AbstractService {
             throw new ForceStreamingException("Invalid push topic name.");
     }
 
-    static class ForceStreamingServiceListener implements BayeuxServer.ChannelListener {
+    static class ForceStreamingMessageListener implements ClientSessionChannel.MessageListener {
+        final ServerChannel serverChannel;
+        public ForceStreamingMessageListener(final ServerChannel serverChannel) {
+            this.serverChannel = serverChannel;
+        }
         @Override
-        public void channelAdded(ServerChannel serverChannel) {
-            String channelName = parseChannelName(serverChannel.getChannelId());
-            System.out.println("ForceStreamingServiceListener.channelAdded: " + serverChannel.getChannelId());
-            for (ServerSession s : serverChannel.getSubscribers()) {
-                System.out.println("Subscriber: " + s.getId());
+        public void onMessage(ClientSessionChannel channel, Message message) {
+            System.out.println("Received message on " + channel.toString() + ": " + message.getJSON());
+            serverChannel.publish(channel.getSession(), message, message.getId());
+        }
+    }
+
+    static class ForceStreamingServiceListener implements BayeuxServer.ChannelListener {
+
+        ForceBayeuxClient client;
+
+        public ForceStreamingServiceListener(ForceBayeuxClient client) {
+            this.client = client;
+        }
+
+        @Override
+        public void channelAdded(final ServerChannel serverChannel) {
+            List<String> channelNames = parseChannelName(serverChannel.getChannelId());
+
+            if (channelNames != null) {
+                for (String channelName : channelNames) {
+                    PushTopic pushTopic = new PushTopic();
+                    pushTopic.setName(channelName);
+
+                    try {
+                        client.subscribeTo(pushTopic, new ForceStreamingMessageListener(serverChannel));
+                    } catch (InterruptedException e) {
+                        System.err.println("Interrupted exception caught on " + channelName);
+                        e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                    }
+                }
             }
         }
 
-        private String parseChannelName(ChannelId channelId) {
-            for (int i = 0; i < channelId.depth(); i++)
-                System.out.println("Channel '" + channelId + "' Segment: " + channelId.getSegment(i));
-            return "";
+        private List<String> parseChannelName(ChannelId channelId) {
+            if (channelId.depth() == 2 && channelId.getSegment(0).equalsIgnoreCase("force")) {
+                return Arrays.asList(channelId.getSegment(1).split("\\|"));
+            }
+            return null;
         }
 
         @Override
         public void channelRemoved(String s) {
-            //To change body of implemented methods use File | Settings | File Templates.
+            // nothin
         }
 
         @Override
         public void configureChannel(ConfigurableServerChannel configurableServerChannel) {
-            System.out.println("ForceStreamingServiceListener.configureChannel");
+
+            // nothin
         }
     }
 }

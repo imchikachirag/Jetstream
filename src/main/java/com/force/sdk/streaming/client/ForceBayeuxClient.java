@@ -47,7 +47,7 @@ public class ForceBayeuxClient {
             put(ClientTransport.TIMEOUT_OPTION, 20000);
 //            put(OAUTH_OPTION, connector.getConnection().getSessionHeader().getSessionId());
         }};
-
+//        httpClient.setProxy(new Address("127.0.0.1", 9595));
         LOGGER.debug("Starting HttpClient", httpClient);
         httpClient.start();
 
@@ -94,7 +94,7 @@ public class ForceBayeuxClient {
     public void handshake() throws InterruptedException {
         LOGGER.debug("Handshaking...");
         bayeuxClient.handshake(HANDSHAKE_TIMEOUT);
-        boolean shaken = bayeuxClient.waitFor(HANDSHAKE_TIMEOUT, BayeuxClient.State.CONNECTING);
+        bayeuxClient.waitFor(HANDSHAKE_TIMEOUT, BayeuxClient.State.CONNECTING);
 
         if (bayeuxClient.isHandshook())
             LOGGER.info("Handshake complete");

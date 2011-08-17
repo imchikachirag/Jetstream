@@ -14,6 +14,7 @@ import org.testng.annotations.Test;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -67,8 +68,11 @@ public class ForceBayeuxClientTest {
                 System.out.println(message.getJSON());
 
                 Map<String,Object> result = message.getDataAsMap();
+
 //                new Gson().
-                Assert.assertTrue(result.containsKey("data"), "Expected a top level 'data' JSON element, but it is not present.");
+                Assert.assertTrue(result.containsKey("sobject"), "Expected a top level 'sobject' JSON element, but it is not present in " + message.getJSON());
+                Assert.assertTrue(result.containsKey("event"), "Expected a top level 'event' JSON element, but it is not present in " + message.getJSON());
+                Assert.assertTrue(((HashMap<String, Object>)result.get("sobject")).containsKey("Name"), "Expected sobject.Name, but it is not present in " + message.getJSON());
 //                Assert.assertTrue(result.get("data"), "Expected a top level 'data' JSON element, but it is not present.");
 //                sessionChannel.getSession().disconnect();
             }
