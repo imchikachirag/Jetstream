@@ -62,6 +62,10 @@ The primary use case intended for a web project is as a proxy. Due to cross-doma
             <servlet-name>cometd</servlet-name>
             <servlet-class>org.cometd.server.CometdServlet</servlet-class>
             <load-on-startup>1</load-on-startup>
+            <init-param>
+                <param-name>timeout</param-name>
+                <param-value>20000</param-value>
+            </init-param>
         </servlet>
         <servlet-mapping>
             <servlet-name>cometd</servlet-name>
