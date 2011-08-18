@@ -35,6 +35,7 @@ Jetstream uses Guice for dependency injection. If you wish to use the client dir
         </dependency>
 ```
 
+Write some Java to handle messages:
 ```java
         Injector injector = Guice.createInjector(new ForceStreamingClientModule());
         ForceBayeuxClient client = injector.getInstance(ForceBayeuxClient.class);
