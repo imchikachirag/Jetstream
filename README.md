@@ -4,9 +4,6 @@ Jetstream is a toolkit for the Force.com Streaming API, a Bayeux implementation 
 The following instructions assume some knowledge of the Force.com platform.  If you are unfamiliar with Force.com, please visit http://developer.force.com.
 
 ## Install
-1. git clone git://github.com/naamannewbold/streaming.git
-2. cd streaming
-3. mvn install -DskipTests
 4. export FORCE_FORCEDATABASE_URL="force://instance.salesforce.com;user=username@org;password=password"
 5. add the following to your own pom.xml
 
