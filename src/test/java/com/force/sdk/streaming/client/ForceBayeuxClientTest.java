@@ -64,6 +64,7 @@ public class ForceBayeuxClientTest {
 
         client.subscribeTo(pushTopic, new ClientSessionChannel.MessageListener() {
             @Override
+            @SuppressWarnings("unchecked")
             public void onMessage(ClientSessionChannel sessionChannel, Message message) {
                 System.out.println(message.getJSON());
 

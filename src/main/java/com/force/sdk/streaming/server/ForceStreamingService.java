@@ -129,6 +129,8 @@ public class ForceStreamingService extends AbstractService {
 
         private List<String> parseChannelName(ChannelId channelId) {
             if (channelId.depth() == 2 && channelId.getSegment(0).equalsIgnoreCase("force")) {
+                // allow a user to provide a '|' delimited list of channels (i.e. push topics) to
+                // listen to
                 return Arrays.asList(channelId.getSegment(1).split("\\|"));
             }
             return null;
@@ -141,7 +143,6 @@ public class ForceStreamingService extends AbstractService {
 
         @Override
         public void configureChannel(ConfigurableServerChannel configurableServerChannel) {
-
             // nothin
         }
     }
