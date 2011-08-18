@@ -21,6 +21,12 @@ The following instructions assume some knowledge of the Force.com platform.  If 
             <version>3.0</version>
         </dependency>
 
+
+        <repository>
+            <id>repo</id>
+            <url>https://raw.github.com/naamannewbold/repo/master/releases/</url>
+        </repository>
+
 Note: at some point in the future, the guide dependency will be abstracted out.
 
 ## Java Usage
