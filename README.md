@@ -9,7 +9,7 @@ The following instructions assume some knowledge of the Force.com platform.  If 
 3. mvn install -DskipTests
 4. export FORCE_FORCEDATABASE_URL="force://instance.salesforce.com;user=username@org;password=password"
 5. add the following to your own pom.xml
-```
+```xml
         <dependency>
             <groupId>com.force.sdk.streaming</groupId>
             <artifactId>streaming</artifactId>
@@ -21,7 +21,7 @@ The following instructions assume some knowledge of the Force.com platform.  If 
             <version>3.0</version>
         </dependency>
 ```
-```
+```xml
         <repository>
             <id>repo</id>
             <url>https://raw.github.com/naamannewbold/repo/master/releases/</url>
