@@ -73,7 +73,7 @@ The primary use case intended for a web project is as a proxy. Due to cross-doma
             <load-on-startup>2</load-on-startup>
         </servlet>
 
-8. wire your javascript client to talk to /service/force, e.g.
+8. wire your javascript client to talk to /force/topicName, e.g.
 
         <html>
             <head>
