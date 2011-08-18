@@ -52,7 +52,8 @@ Write some Java to handle messages:
 ## Java Web Project Usage
 Due to cross-domain limitations, javascript cannot callout to the streaming API unless it's on salesforce.com. This servlet acts as a proxy, allowing javascript to interact with the streaming API.
 
-6. Add this dependency to your pom.xml
+Add this dependency to your pom.xml
+
 ```xml
         <dependency>
             <groupId>com.force.sdk.streaming</groupId>
@@ -60,7 +61,8 @@ Due to cross-domain limitations, javascript cannot callout to the streaming API 
             <version>0.11</version>
         </dependency>
 ```
-7. in your web project, add the following to your web.xml
+
+Add the cometd and streaming servlets to your web.xml
 ```xml
         <servlet>
             <servlet-name>cometd</servlet-name>
@@ -81,7 +83,9 @@ Due to cross-domain limitations, javascript cannot callout to the streaming API 
             <load-on-startup>2</load-on-startup>
         </servlet>
 ```
-8. wire your javascript client to talk to /force/topicName, e.g.
+
+Wire your javascript client to talk to /force/topicName, e.g.
+
 ```html
         <html>
             <head>
