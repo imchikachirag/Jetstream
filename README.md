@@ -1,5 +1,5 @@
-# Salesforce Streaming API Toolkit For Java
-The Force.com Streaming API is a Bayeux implementation built on the Force.com platform.  The toolkit for Java provides a simple way to configure a connection to the Streaming API.  For more information on the Force.com Streaming API, please review the [guide](http://wiki.developerforce.com/index.php/Getting_Started_with_the_Force.com_Streaming_API).
+m
+Jetstream is a toolkit for the Force.com Streaming API, a Bayeux implementation built on the Force.com platform.  Jetstream provides a simple way to configure a connection to the Streaming API.  For more information on the Force.com Streaming API, please review the [guide](http://wiki.developerforce.com/index.php/Getting_Started_with_the_Force.com_Streaming_API).
 
 The following instructions assume some knowledge of the Force.com platform.  If you are unfamiliar with Force.com, please visit http://developer.force.com.
 
@@ -16,6 +16,21 @@ The following instructions assume some knowledge of the Force.com platform.  If 
             <artifactId>streaming</artifactId>
             <version>0.11</version>
         </dependency>
+```
+
+```xml
+        <repositories>
+            <repository>
+                <id>repo</id>
+                <url>https://raw.github.com/naamannewbold/repo/master/releases/</url>
+            </repository>
+        </repositories>
+```
+
+## Java Usage
+Jetstream uses Guice for dependency injection. If you wish to use the client directly, add Guice to your pom.xml:
+
+```xml
         <dependency>
             <groupId>com.google.inject</groupId>
             <artifactId>guice</artifactId>
@@ -23,30 +38,20 @@ The following instructions assume some knowledge of the Force.com platform.  If 
         </dependency>
 ```
 
-```xml
-        <repository>
-            <id>repo</id>
-            <url>https://raw.github.com/naamannewbold/repo/master/releases/</url>
-        </repository>
-```
-Note: at some point in the future, the guide dependency will be abstracted out.
-
-## Java Usage
 ```java
         Injector injector = Guice.createInjector(new ForceStreamingClientModule());
         ForceBayeuxClient client = injector.getInstance(ForceBayeuxClient.class);
         PushTopicManager pushTopicManager = injector.getInstance(PushTopicManager.class);
-        PushTopic topic = pushTopicManager.getTopicByName(name);
+        PushTopic topic = pushTopicManager.getTopicByName("products");
         client.subscribeTo(topic, new ClientSessionChannel.MessageListener() {
             public void onMessage(ClientSessionChannel channel, Message message) {
-                LOGGER.debug("Received message on " + channel.toString());
-                remote.deliver(getServerSession(), "/force", message, null);
+                System.out.println(message.getJSON());
             }
         });
 ```
 
 ## Java Web Project Usage
-The primary use case intended for a web project is as a proxy. Due to cross-domain limitations, javascript cannot callout to the streaming API unless it's on force.com or salesforce.com. This servlet allows javascript to interact with the streaming API.
+Due to cross-domain limitations, javascript cannot callout to the streaming API unless it's on salesforce.com. This servlet acts as a proxy, allowing javascript to interact with the streaming API.
 
 6. Add this dependency to your pom.xml
 
@@ -111,7 +116,7 @@ The primary use case intended for a web project is as a proxy. Due to cross-doma
         		    cometd.disconnect(true);
         		});
         
-        		var cometURL = location.protocol + "//" + location.host + config.contextPath + "/cometd";
+        		var cometURL = location.protocol + "//" + location.host + "/cometd";
         		cometd.configure({
         		    url: cometURL
         		});
@@ -121,13 +126,9 @@ The primary use case intended for a web project is as a proxy. Due to cross-doma
         		cometd.handshake();
         	    });
         	})(jQuery);
-        
-                var config = {
-                    contextPath: '${pageContext.request.contextPath}'
-                };
-                </script>
             </head>
             <body>
             </body>
         </html>
+
 
