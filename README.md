@@ -1,4 +1,4 @@
-m
+# Jetstream
 Jetstream is a toolkit for the Force.com Streaming API, a Bayeux implementation built on the Force.com platform.  Jetstream provides a simple way to configure a connection to the Streaming API.  For more information on the Force.com Streaming API, please review the [guide](http://wiki.developerforce.com/index.php/Getting_Started_with_the_Force.com_Streaming_API).
 
 The following instructions assume some knowledge of the Force.com platform.  If you are unfamiliar with Force.com, please visit http://developer.force.com.
