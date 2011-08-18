@@ -43,7 +43,7 @@ public class ForceBayeuxClient {
 
     private BayeuxClient setupBayeuxClient(HttpClient httpClient, String baseUrl) throws Exception {
         Map<String, Object> clientOptions = new HashMap<String, Object>() {{
-            put(ClientTransport.TIMEOUT_OPTION, 10000);
+            put(ClientTransport.TIMEOUT_OPTION, 20000);
 //            put(OAUTH_OPTION, connector.getConnection().getSessionHeader().getSessionId());
         }};
 //        httpClient.setProxy(new Address("127.0.0.1", 9595));

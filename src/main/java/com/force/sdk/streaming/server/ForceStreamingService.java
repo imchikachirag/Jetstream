@@ -37,7 +37,7 @@ public class ForceStreamingService extends AbstractService {
     private static final Logger LOGGER = LoggerFactory.getLogger(ForceStreamingService.class);
 
     public ForceStreamingService(BayeuxServer bayeuxServer, ServletConfig config) {
-        super(bayeuxServer, "ForceStreamingService");
+        super(bayeuxServer, "force");
         LOGGER.info("Creating bayeux service at /service/force");
         Injector injector = Guice.createInjector(new ForceStreamingClientModule(
                 getParam(config, Defaults.CONNECTION_NAME)
@@ -47,7 +47,9 @@ public class ForceStreamingService extends AbstractService {
         client = injector.getInstance(ForceBayeuxClient.class);
 
         pushTopicManager = injector.getInstance(PushTopicManager.class);
+//        bayeuxServer.addExtension(new ForceStreamingServiceExtension());
         bayeuxServer.addListener(new ForceStreamingServiceListener(client));
+
         addService("/service/force", "processForce");
     }
 
@@ -96,10 +98,50 @@ public class ForceStreamingService extends AbstractService {
         @Override
         public void onMessage(ClientSessionChannel channel, Message message) {
             System.out.println("Received message on " + channel.toString() + ": " + message.getJSON());
+
             serverChannel.publish(channel.getSession(), message, message.getId());
         }
     }
 
+//    static class ForceStreamingServiceExtension implements BayeuxServer.Extension {
+//
+//        @Override
+//        public boolean rcv(ServerSession from, ServerMessage.Mutable message) {
+//            if (message.getChannelId().matches(new ChannelId("/meta/subscribe"))) {
+//
+//            }
+//
+//            System.out.println("Message received for " + message.getChannel() + ": " + message);
+//            return true;  //To change body of implemented methods use File | Settings | File Templates.
+//        }
+//
+//        @Override
+//        public boolean rcvMeta(ServerSession from, ServerMessage.Mutable message) {
+//            System.out.println("Message received for " + message.getChannel() + ": " + message);
+//            return true;  //To change body of implemented methods use File | Settings | File Templates.
+//        }
+//
+//        @Override
+//        public boolean send(ServerSession from, ServerSession to, ServerMessage.Mutable message) {
+//            return true;  //To change body of implemented methods use File | Settings | File Templates.
+//        }
+//
+//        @Override
+//        public boolean sendMeta(ServerSession to, ServerMessage.Mutable message) {
+//            return true;  //To change body of implemented methods use File | Settings | File Templates.
+//        }
+//
+//        private List<String> parseChannelName(ChannelId channelId) {
+//            if (channelId.depth() == 2 && channelId.getSegment(0).equalsIgnoreCase("force")) {
+//                // allow a user to provide a '|' delimited list of channels (i.e. push topics) to
+//                // listen to
+//                return Arrays.asList(channelId.getSegment(1).split("\\|"));
+//            }
+//            return null;
+//        }
+//
+//    }
+//
     static class ForceStreamingServiceListener implements BayeuxServer.ChannelListener {
 
         ForceBayeuxClient client;
@@ -119,6 +161,7 @@ public class ForceStreamingService extends AbstractService {
                     pushTopic.setName(channelName);
 
                     try {
+
                         client.subscribeTo(pushTopic, new ForceStreamingMessageListener(serverChannel));
                     } catch (InterruptedException e) {
                         System.err.println("Interrupted exception caught on " + channelName);
@@ -139,12 +182,13 @@ public class ForceStreamingService extends AbstractService {
 
         @Override
         public void channelRemoved(String s) {
+            System.out.println("Removing channel " + s);
             // nothin
         }
 
         @Override
-        public void configureChannel(ConfigurableServerChannel configurableServerChannel) {
-            // nothin
+        public void configureChannel(ConfigurableServerChannel channel) {
+            //To change body of implemented methods use File | Settings | File Templates.
         }
     }
 }
