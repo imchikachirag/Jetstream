@@ -10,17 +10,25 @@ The following instructions assume some knowledge of the Force.com platform.  If 
 4. export FORCE_FORCEDATABASE_URL="force://instance.salesforce.com;user=username@org;password=password"
 5. add the following to your own pom.xml
 
+```xml
         <dependency>
             <groupId>com.force.sdk.streaming</groupId>
             <artifactId>streaming</artifactId>
-            <version>0.1</version>
+            <version>0.11</version>
         </dependency>
         <dependency>
             <groupId>com.google.inject</groupId>
             <artifactId>guice</artifactId>
             <version>3.0</version>
         </dependency>
+```
 
+```xml
+        <repository>
+            <id>repo</id>
+            <url>https://raw.github.com/naamannewbold/repo/master/releases/</url>
+        </repository>
+```
 Note: at some point in the future, the guide dependency will be abstracted out.
 
 ## Java Usage
@@ -40,18 +48,12 @@ Note: at some point in the future, the guide dependency will be abstracted out.
 ## Java Web Project Usage
 The primary use case intended for a web project is as a proxy. Due to cross-domain limitations, javascript cannot callout to the streaming API unless it's on force.com or salesforce.com. This servlet allows javascript to interact with the streaming API.
 
-6. Add these dependencies to your pom.xml
+6. Add this dependency to your pom.xml
 
         <dependency>
             <groupId>com.force.sdk.streaming</groupId>
             <artifactId>streaming</artifactId>
-            <version>0.1</version>
-        </dependency>
-        <dependency>
-            <groupId>org.cometd.javascript</groupId>
-            <artifactId>cometd-javascript-jquery</artifactId>
-            <version>2.3.1</version>
-            <type>war</type>
+            <version>0.11</version>
         </dependency>
 
 7. in your web project, add the following to your web.xml
@@ -60,6 +62,10 @@ The primary use case intended for a web project is as a proxy. Due to cross-doma
             <servlet-name>cometd</servlet-name>
             <servlet-class>org.cometd.server.CometdServlet</servlet-class>
             <load-on-startup>1</load-on-startup>
+            <init-param>
+                <param-name>timeout</param-name>
+                <param-value>20000</param-value>
+            </init-param>
         </servlet>
         <servlet-mapping>
             <servlet-name>cometd</servlet-name>
@@ -71,13 +77,57 @@ The primary use case intended for a web project is as a proxy. Due to cross-doma
             <load-on-startup>2</load-on-startup>
         </servlet>
 
-8. wire your javascript client to talk to /service/force, e.g.
+8. wire your javascript client to talk to /force/topicName, e.g.
 
-        cometd.batch(function()
-        {
-            cometd.subscribe('/force', function(message)
-            {
-                $('#el').append('<pre>' + JSON.stringify(message, null, 4) + '</pre>');
-            });
-            cometd.publish('/service/force', { name: 'channelName' });
-        });
+        <html>
+            <head>
+                <script type="text/javascript" src="/jquery/jquery-1.6.2.js"></script>
+                <script type="text/javascript" src="/jquery/json2.js"></script>
+                <script type="text/javascript" src="/org/cometd.js"></script>
+                <script type="text/javascript" src="/jquery/jquery.cometd.js"></script>
+                <script type="text/javascript">
+                (function($)
+        	{
+        	    var cometd = $.cometd;
+        
+        	    $(document).ready(function()
+        	    {
+        		function _metaHandshake(handshake)
+        		{
+        		    if (handshake.successful === true)
+        		    {
+        			cometd.batch(function()
+        			{
+        			    cometd.subscribe('/force/products', function(messages) {
+        				$("body").append('<pre>' + JSON.stringify(messages) + '</pre>');
+        			    });
+        			});
+        		    }
+        		}
+        
+        		// Disconnect when the page unloads
+        		$(window).unload(function()
+        		{
+        		    cometd.disconnect(true);
+        		});
+        
+        		var cometURL = location.protocol + "//" + location.host + config.contextPath + "/cometd";
+        		cometd.configure({
+        		    url: cometURL
+        		});
+        
+        		cometd.addListener('/meta/handshake', _metaHandshake);
+        
+        		cometd.handshake();
+        	    });
+        	})(jQuery);
+        
+                var config = {
+                    contextPath: '${pageContext.request.contextPath}'
+                };
+                </script>
+            </head>
+            <body>
+            </body>
+        </html>
+
