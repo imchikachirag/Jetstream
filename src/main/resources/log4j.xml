@@ -3,46 +3,46 @@
 
 <log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
 
-  <!-- Appenders -->
-  <appender name="console" class="org.apache.log4j.ConsoleAppender">
-    <param name="Target" value="System.out" />
-    <layout class="org.apache.log4j.PatternLayout">
-      <param name="ConversionPattern" value="%-5p : %d{ISO8601} : %c - %m%n" />
-    </layout>
-  </appender>
+  <!--&lt;!&ndash; Appenders &ndash;&gt;-->
+  <!--<appender name="console" class="org.apache.log4j.ConsoleAppender">-->
+    <!--<param name="Target" value="System.out" />-->
+    <!--<layout class="org.apache.log4j.PatternLayout">-->
+      <!--<param name="ConversionPattern" value="%-5p : %d{ISO8601} : %c - %m%n" />-->
+    <!--</layout>-->
+  <!--</appender>-->
 
 
-    <logger name="com.force.sdk.connector">
-      <level value="TRACE" />
-    </logger>
-      <logger name="com.sforce">
-          <level value="TRACE" />
-      </logger>
+    <!--<logger name="com.force.sdk.connector">-->
+      <!--<level value="TRACE" />-->
+    <!--</logger>-->
+      <!--<logger name="com.sforce">-->
+          <!--<level value="TRACE" />-->
+      <!--</logger>-->
 
-  <logger name="com.force.sdk.streaming.client.ForceBayeuxClient">
-      <level value="DEBUG" />
-  </logger>
+  <!--<logger name="com.force.sdk.streaming.client.ForceBayeuxClient">-->
+      <!--<level value="DEBUG" />-->
+  <!--</logger>-->
 
-    <logger name="com.force.sdk.streaming.client.ForceStreamingClientModule">
-        <level value="DEBUG" />
-    </logger>
+    <!--<logger name="com.force.sdk.streaming.client.ForceStreamingClientModule">-->
+        <!--<level value="DEBUG" />-->
+    <!--</logger>-->
 
-    <logger name="com.force.sdk.streaming.server.ForceStreamingService">
-        <level value="DEBUG" />
-    </logger>
+    <!--<logger name="com.force.sdk.streaming.server.ForceStreamingService">-->
+        <!--<level value="DEBUG" />-->
+    <!--</logger>-->
 
-    <logger name="com.force.sdk.streaming.server.ForceStreamingResource">
-        <level value="DEBUG" />
-    </logger>
+    <!--<logger name="com.force.sdk.streaming.server.ForceStreamingResource">-->
+        <!--<level value="DEBUG" />-->
+    <!--</logger>-->
 
-    <logger name="org.cometd">
-        <level value="DEBUG" />
-    </logger>
+    <!--<logger name="org.cometd">-->
+        <!--<level value="DEBUG" />-->
+    <!--</logger>-->
 
-  <!-- Root Logger -->
-  <root>
-    <priority value="INFO" />
-    <appender-ref ref="console" />
-  </root>
+  <!--&lt;!&ndash; Root Logger &ndash;&gt;-->
+  <!--<root>-->
+    <!--<priority value="INFO" />-->
+    <!--<appender-ref ref="console" />-->
+  <!--</root>-->
 
 </log4j:configuration>
