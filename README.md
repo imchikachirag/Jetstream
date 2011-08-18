@@ -63,6 +63,7 @@ Add this dependency to your pom.xml
 ```
 
 Add the cometd and streaming servlets to your web.xml
+
 ```xml
         <servlet>
             <servlet-name>cometd</servlet-name>
