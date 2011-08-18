@@ -14,7 +14,7 @@ The following instructions assume some knowledge of the Force.com platform.  If 
         <dependency>
             <groupId>com.force.sdk.streaming</groupId>
             <artifactId>streaming</artifactId>
-            <version>0.1</version>
+            <version>0.11</version>
         </dependency>
         <dependency>
             <groupId>com.google.inject</groupId>
@@ -48,18 +48,12 @@ Note: at some point in the future, the guide dependency will be abstracted out.
 ## Java Web Project Usage
 The primary use case intended for a web project is as a proxy. Due to cross-domain limitations, javascript cannot callout to the streaming API unless it's on force.com or salesforce.com. This servlet allows javascript to interact with the streaming API.
 
-6. Add these dependencies to your pom.xml
+6. Add this dependency to your pom.xml
 
         <dependency>
             <groupId>com.force.sdk.streaming</groupId>
             <artifactId>streaming</artifactId>
-            <version>0.1</version>
-        </dependency>
-        <dependency>
-            <groupId>org.cometd.javascript</groupId>
-            <artifactId>cometd-javascript-jquery</artifactId>
-            <version>2.3.1</version>
-            <type>war</type>
+            <version>0.11</version>
         </dependency>
 
 7. in your web project, add the following to your web.xml
@@ -81,11 +75,55 @@ The primary use case intended for a web project is as a proxy. Due to cross-doma
 
 8. wire your javascript client to talk to /service/force, e.g.
 
-        cometd.batch(function()
-        {
-            cometd.subscribe('/force', function(message)
-            {
-                $('#el').append('<pre>' + JSON.stringify(message, null, 4) + '</pre>');
-            });
-            cometd.publish('/service/force', { name: 'channelName' });
-        });
+        <html>
+            <head>
+                <script type="text/javascript" src="/jquery/jquery-1.6.2.js"></script>
+                <script type="text/javascript" src="/jquery/json2.js"></script>
+                <script type="text/javascript" src="/org/cometd.js"></script>
+                <script type="text/javascript" src="/jquery/jquery.cometd.js"></script>
+                <script type="text/javascript">
+                (function($)
+        	{
+        	    var cometd = $.cometd;
+        
+        	    $(document).ready(function()
+        	    {
+        		function _metaHandshake(handshake)
+        		{
+        		    if (handshake.successful === true)
+        		    {
+        			cometd.batch(function()
+        			{
+        			    cometd.subscribe('/force/products', function(messages) {
+        				$("body").append('<pre>' + JSON.stringify(messages) + '</pre>');
+        			    });
+        			});
+        		    }
+        		}
+        
+        		// Disconnect when the page unloads
+        		$(window).unload(function()
+        		{
+        		    cometd.disconnect(true);
+        		});
+        
+        		var cometURL = location.protocol + "//" + location.host + config.contextPath + "/cometd";
+        		cometd.configure({
+        		    url: cometURL
+        		});
+        
+        		cometd.addListener('/meta/handshake', _metaHandshake);
+        
+        		cometd.handshake();
+        	    });
+        	})(jQuery);
+        
+                var config = {
+                    contextPath: '${pageContext.request.contextPath}'
+                };
+                </script>
+            </head>
+            <body>
+            </body>
+        </html>
+
