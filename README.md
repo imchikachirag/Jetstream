@@ -9,7 +9,7 @@ The following instructions assume some knowledge of the Force.com platform.  If 
 3. mvn install -DskipTests
 4. export FORCE_FORCEDATABASE_URL="force://instance.salesforce.com;user=username@org;password=password"
 5. add the following to your own pom.xml
-
+```
         <dependency>
             <groupId>com.force.sdk.streaming</groupId>
             <artifactId>streaming</artifactId>
@@ -20,13 +20,13 @@ The following instructions assume some knowledge of the Force.com platform.  If 
             <artifactId>guice</artifactId>
             <version>3.0</version>
         </dependency>
-
-
+```
+```
         <repository>
             <id>repo</id>
             <url>https://raw.github.com/naamannewbold/repo/master/releases/</url>
         </repository>
-
+```
 Note: at some point in the future, the guide dependency will be abstracted out.
 
 ## Java Usage
