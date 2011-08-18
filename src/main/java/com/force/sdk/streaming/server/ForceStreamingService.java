@@ -114,6 +114,7 @@ public class ForceStreamingService extends AbstractService {
 
             if (channelNames != null) {
                 for (String channelName : channelNames) {
+                    System.out.println("Connecting to push topic " + channelName);
                     PushTopic pushTopic = new PushTopic();
                     pushTopic.setName(channelName);
 

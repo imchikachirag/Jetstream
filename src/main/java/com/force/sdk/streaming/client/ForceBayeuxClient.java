@@ -39,7 +39,6 @@ public class ForceBayeuxClient {
         this.connector = connector;
         LOGGER.debug("Setting up bayeux client for " + baseUrl);
         bayeuxClient = setupBayeuxClient(httpClient, baseUrl);
-        bayeuxClient.setDebugEnabled(true);
     }
 
     private BayeuxClient setupBayeuxClient(HttpClient httpClient, String baseUrl) throws Exception {
