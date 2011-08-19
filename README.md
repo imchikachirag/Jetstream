@@ -130,6 +130,7 @@ Wire your javascript client to talk to /force/topicName, e.g.
         		cometd.handshake();
         	    });
         	})(jQuery);
+            </script>
             </head>
             <body>
             </body>
