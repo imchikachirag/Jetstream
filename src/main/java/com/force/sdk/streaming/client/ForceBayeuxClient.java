@@ -46,7 +46,7 @@ public class ForceBayeuxClient {
             put(ClientTransport.TIMEOUT_OPTION, 20000);
 //            put(OAUTH_OPTION, connector.getConnection().getSessionHeader().getSessionId());
         }};
-//        httpClient.setProxy(new Address("127.0.0.1", 9595));
+//        httpClient.setProxy(new Address("127.0.0.1", 8080));
         LOGGER.debug("Starting HttpClient", httpClient);
         httpClient.start();
 

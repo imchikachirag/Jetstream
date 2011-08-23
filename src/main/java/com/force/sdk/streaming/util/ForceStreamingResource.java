@@ -7,7 +7,7 @@ public enum ForceStreamingResource {
     CHANNEL_PREFIX ("/topic/")
   , RESOURCE_ENDPOINT ("/cometd/23.0")
     // TODO: parameterize http vs https -- need to be able to toggle for debugging
-  , PROTOCOL ("http");
+  , PROTOCOL ("https");
 
     private String value;
 
